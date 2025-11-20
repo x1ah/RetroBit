@@ -1,0 +1,5 @@
+{
+  "name": "RetroBit - 8Bit",
+  "description": "A retro-styled audio player that converts any music into 8-bit chiptune style in real-time, featuring AI-generated pixel art covers.",
+  "requestFramePermissions": []
+}
