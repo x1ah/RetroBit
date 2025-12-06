@@ -379,6 +379,7 @@ export default function App() {
                 [AudioSourceType.NETEASE]: '网易云',
                 [AudioSourceType.QQ]: 'QQ音乐'
               };
+              const isQQ = type === AudioSourceType.QQ;
               return (
                 <button
                   key={type}
@@ -389,7 +390,7 @@ export default function App() {
                       : 'hover:bg-zinc-700 text-gray-400'
                   }`}
                 >
-                  {tabNames[type]}
+                  {isQQ ? <span className="text-sm">{tabNames[type]}</span> : tabNames[type]}
                 </button>
               );
             })}

@@ -104,6 +104,8 @@ export const Controls: React.FC<ControlsProps> = ({ audioState, setAudioState, o
             "VAPOR": "蒸汽波",
             "ORIG": "原始"
           };
+          const displayName = presetNames[key] || key;
+          const isDOS = key === "DOS";
           return (
            <button
              key={key}
@@ -112,7 +114,7 @@ export const Controls: React.FC<ControlsProps> = ({ audioState, setAudioState, o
                  isActive ? "bg-green-800 text-white hover:bg-green-700" : "bg-zinc-700 text-gray-300 hover:bg-zinc-600"
              }`}
            >
-             {presetNames[key] || key}
+             {isDOS ? <span className="text-[11px]">{displayName}</span> : displayName}
            </button>
           );
         })}
@@ -123,7 +125,7 @@ export const Controls: React.FC<ControlsProps> = ({ audioState, setAudioState, o
         
         {/* 1. Bit Depth */}
         <div className="space-y-2 p-2 border border-gray-700 bg-black/20 rounded hover:border-pink-900 transition-colors">
-          <label className="text-[11px] font-retro text-pink-500 block text-center">BITS ({Math.round(audioState.bitDepth)})</label>
+          <label className="text-[10px] font-retro text-pink-500 block text-center">BITS ({Math.round(audioState.bitDepth)})</label>
           <input 
             type="range" 
             min="1" 
@@ -137,7 +139,7 @@ export const Controls: React.FC<ControlsProps> = ({ audioState, setAudioState, o
 
         {/* 2. Frequency / Downsample */}
         <div className="space-y-2 p-2 border border-gray-700 bg-black/20 rounded hover:border-blue-900 transition-colors">
-          <label className="text-[11px] font-retro text-blue-400 block text-center">LO-FI ({(1 - audioState.frequencyReduction).toFixed(2)})</label>
+          <label className="text-[10px] font-retro text-blue-400 block text-center">LO-FI ({(1 - audioState.frequencyReduction).toFixed(2)})</label>
           <input 
             type="range" 
             min="0" 
@@ -151,7 +153,7 @@ export const Controls: React.FC<ControlsProps> = ({ audioState, setAudioState, o
 
         {/* 3. Drive */}
         <div className="space-y-2 p-2 border border-gray-700 bg-black/20 rounded hover:border-red-900 transition-colors">
-          <label className="text-[11px] font-retro text-red-500 block text-center">DRIVE ({audioState.drive.toFixed(1)})</label>
+          <label className="text-[10px] font-retro text-red-500 block text-center">DRIVE ({audioState.drive.toFixed(1)})</label>
           <input 
             type="range" 
             min="1" 
@@ -165,7 +167,7 @@ export const Controls: React.FC<ControlsProps> = ({ audioState, setAudioState, o
 
         {/* 4. Tone/LPF */}
         <div className="space-y-2 p-2 border border-gray-700 bg-black/20 rounded hover:border-yellow-900 transition-colors">
-          <label className="text-[11px] font-retro text-yellow-400 block text-center">TONE</label>
+          <label className="text-[10px] font-retro text-yellow-400 block text-center">TONE</label>
           <input 
             type="range" 
             min="500" 
@@ -189,7 +191,7 @@ export const Controls: React.FC<ControlsProps> = ({ audioState, setAudioState, o
          
          <div className="flex flex-col gap-1">
              <div className="flex justify-between">
-                <span className="font-retro text-[11px] text-gray-400">VOL</span>
+                <span className="font-retro text-[10px] text-gray-400">VOL</span>
                 <span className="font-mono text-[10px] text-gray-500">{Math.round(audioState.volume * 100)}%</span>
              </div>
              <input 
@@ -205,7 +207,7 @@ export const Controls: React.FC<ControlsProps> = ({ audioState, setAudioState, o
 
          <div className="flex flex-col gap-1">
             <div className="flex justify-between">
-                <span className="font-retro text-[11px] text-gray-400">SPEED</span>
+                <span className="font-retro text-[10px] text-gray-400">SPEED</span>
                 <span className="font-mono text-[10px] text-gray-500">{audioState.playbackRate}x</span>
             </div>
             <input 
