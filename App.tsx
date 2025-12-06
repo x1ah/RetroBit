@@ -45,7 +45,7 @@ const BUILTIN_TRACKS = [
 
 export default function App() {
   // UI State
-  const [activeTab, setActiveTab] = useState<AudioSourceType>(AudioSourceType.FILE);
+  const [activeTab, setActiveTab] = useState<AudioSourceType>(AudioSourceType.DEMO);
   const [metadata, setMetadata] = useState<SongMetadata>({
     title: "INSERT CARTRIDGE",
     artist: "UNKNOWN",
@@ -372,19 +372,27 @@ export default function App() {
         <div className="lg:col-span-7 flex flex-col gap-6">
           
           <div className="bg-zinc-800 p-1 rounded border-2 border-gray-700 flex gap-1">
-            {[AudioSourceType.FILE, AudioSourceType.DEMO, AudioSourceType.NETEASE, AudioSourceType.QQ].map((type) => (
-              <button
-                key={type}
-                onClick={() => setActiveTab(type)}
-                className={`flex-1 py-2 text-xs font-retro transition-colors ${
-                  activeTab === type 
-                    ? 'bg-green-700 text-white shadow-inner' 
-                    : 'hover:bg-zinc-700 text-gray-400'
-                }`}
-              >
-                {type === 'NETEASE' ? 'NETEASE' : type === 'QQ' ? 'QQ' : type === 'FILE' ? 'UPLOAD' : 'RECOMMEND'}
-              </button>
-            ))}
+            {[AudioSourceType.DEMO, AudioSourceType.FILE, AudioSourceType.NETEASE, AudioSourceType.QQ].map((type) => {
+              const tabNames: Record<AudioSourceType, string> = {
+                [AudioSourceType.DEMO]: '推荐',
+                [AudioSourceType.FILE]: '上传',
+                [AudioSourceType.NETEASE]: '网易云',
+                [AudioSourceType.QQ]: 'QQ音乐'
+              };
+              return (
+                <button
+                  key={type}
+                  onClick={() => setActiveTab(type)}
+                  className={`flex-1 py-2 text-xs font-retro transition-colors ${
+                    activeTab === type 
+                      ? 'bg-green-700 text-white shadow-inner' 
+                      : 'hover:bg-zinc-700 text-gray-400'
+                  }`}
+                >
+                  {tabNames[type]}
+                </button>
+              );
+            })}
           </div>
 
           <div className="bg-black p-4 border-4 border-dashed border-gray-800 min-h-[160px] flex flex-col justify-center">

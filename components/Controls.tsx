@@ -30,6 +30,26 @@ export const Controls: React.FC<ControlsProps> = ({ audioState, setAudioState, o
     }
   };
 
+  // 检查当前状态是否匹配某个预设（允许小的浮点数误差）
+  const matchesPreset = (presetName: string): boolean => {
+    const preset = PRESETS[presetName];
+    if (!preset) return false;
+    
+    const tolerance = 0.01; // 容差
+    
+    const checkValue = (actual: number, expected: number | undefined) => {
+      if (expected === undefined) return true;
+      return Math.abs(actual - expected) < tolerance;
+    };
+    
+    return (
+      checkValue(audioState.bitDepth, preset.bitDepth) &&
+      checkValue(audioState.frequencyReduction, preset.frequencyReduction) &&
+      checkValue(audioState.drive, preset.drive) &&
+      checkValue(audioState.lowPassFreq, preset.lowPassFreq)
+    );
+  };
+
   const formatTime = (time: number) => {
     if (!time || isNaN(time)) return "00:00";
     const minutes = Math.floor(time / 60);
@@ -74,17 +94,20 @@ export const Controls: React.FC<ControlsProps> = ({ audioState, setAudioState, o
       {/* Row 2: Presets */}
       <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
         <span className="text-[10px] font-retro text-gray-500 mr-2 shrink-0">PRESETS:</span>
-        {Object.keys(PRESETS).map(key => (
+        {Object.keys(PRESETS).map(key => {
+          const isActive = matchesPreset(key);
+          return (
            <button
              key={key}
              onClick={() => applyPreset(key)}
              className={`px-3 py-1 border-b-2 border-black text-[10px] font-retro transition-colors rounded-t ${
-                 key === "ORIG" ? "bg-green-800 text-white hover:bg-green-700" : "bg-zinc-700 text-gray-300 hover:bg-zinc-600"
+                 isActive ? "bg-green-800 text-white hover:bg-green-700" : "bg-zinc-700 text-gray-300 hover:bg-zinc-600"
              }`}
            >
              {key}
            </button>
-        ))}
+          );
+        })}
       </div>
 
       {/* Row 3: FX Controls Grid */}
