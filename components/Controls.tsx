@@ -93,9 +93,17 @@ export const Controls: React.FC<ControlsProps> = ({ audioState, setAudioState, o
 
       {/* Row 2: Presets */}
       <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
-        <span className="text-[10px] font-retro text-gray-500 mr-2 shrink-0">PRESETS:</span>
+        <span className="text-[10px] font-retro text-gray-500 mr-2 shrink-0">预设：</span>
         {Object.keys(PRESETS).map(key => {
           const isActive = matchesPreset(key);
+          // 预设名称中文映射
+          const presetNames: Record<string, string> = {
+            "NES": "任天堂",
+            "GB": "游戏男孩",
+            "DOS": "DOS",
+            "VAPOR": "蒸汽波",
+            "ORIG": "原始"
+          };
           return (
            <button
              key={key}
@@ -104,7 +112,7 @@ export const Controls: React.FC<ControlsProps> = ({ audioState, setAudioState, o
                  isActive ? "bg-green-800 text-white hover:bg-green-700" : "bg-zinc-700 text-gray-300 hover:bg-zinc-600"
              }`}
            >
-             {key}
+             {presetNames[key] || key}
            </button>
           );
         })}
