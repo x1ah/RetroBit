@@ -4,6 +4,45 @@ import { Controls } from './components/Controls';
 import { Visualizer } from './components/Visualizer';
 import { generatePixelArtCover, generateSongDescription } from './services/geminiService';
 
+// 内置音频文件映射
+const BUILTIN_TRACKS = [
+  { 
+    title: "Seven Nation Army", 
+    artist: "The White Stripes",
+    filename: "seven-nation-army.mp3"
+  },
+  { 
+    title: "Axel F", 
+    artist: "Harold Faltermeyer",
+    filename: "axel-f.mp3"
+  },
+  { 
+    title: "Blue (Da Ba Dee)", 
+    artist: "Eiffel 65",
+    filename: "blue-da-ba-dee.mp3"
+  },
+  { 
+    title: "Billie Jean", 
+    artist: "Michael Jackson",
+    filename: "billie-jean.mp3"
+  },
+  { 
+    title: "残酷天使的行动纲领", 
+    artist: "高桥洋子",
+    filename: "cruel-angel-thesis.mp3"
+  },
+  { 
+    title: "Faded", 
+    artist: "Alan Walker",
+    filename: "faded.mp3"
+  },
+  { 
+    title: "Toccata and Fugue in D Minor", 
+    artist: "Bach",
+    filename: "toccata-fugue.mp3"
+  }
+];
+
 export default function App() {
   // UI State
   const [activeTab, setActiveTab] = useState<AudioSourceType>(AudioSourceType.FILE);
@@ -373,19 +412,54 @@ export default function App() {
 
             {activeTab === AudioSourceType.DEMO && (
                <div className="w-full h-full">
-                <div className="bg-zinc-900 p-4 rounded border border-gray-700 w-full overflow-y-auto max-h-[200px]">
+                <div className="bg-zinc-900 p-4 rounded border border-gray-700 w-full overflow-y-auto max-h-[300px]">
                   <h3 className="text-yellow-400 font-retro text-xs mb-3 text-center">RECOMMENDED TRACKS</h3>
-                  <p className="text-[10px] text-gray-500 font-mono mb-3 text-center">
-                     请自行搜索并下载以下歌曲，然后在 UPLOAD 页面上传以获得最佳体验。
+                  <p className="text-[10px] text-green-400 font-mono mb-3 text-center">
+                     ✨ 点击下方曲目即可播放
                   </p>
                   <ul className="text-[10px] font-mono text-gray-400 space-y-2 list-none pl-2">
-                    <li className="flex items-center"><span className="text-green-500 mr-2">★</span> The White Stripes - Seven Nation Army</li>
-                    <li className="flex items-center"><span className="text-green-500 mr-2">★</span> Harold Faltermeyer - Axel F</li>
-                    <li className="flex items-center"><span className="text-green-500 mr-2">★</span> Eiffel 65 - Blue (Da Ba Dee)</li>
-                    <li className="flex items-center"><span className="text-green-500 mr-2">★</span> Michael Jackson - Billie Jean</li>
-                    <li className="flex items-center"><span className="text-green-500 mr-2">★</span> 高桥洋子 - 残酷天使的行动纲领</li>
-                    <li className="flex items-center"><span className="text-green-500 mr-2">★</span> Alan Walker - Faded</li>
-                    <li className="flex items-center"><span className="text-green-500 mr-2">★</span> Bach - Toccata and Fugue in D Minor</li>
+                    {BUILTIN_TRACKS.map((track, index) => (
+                      <li 
+                        key={index}
+                        className="flex items-center justify-between group cursor-pointer hover:text-green-400 transition-colors py-1 px-2 rounded hover:bg-zinc-800"
+                        onClick={async () => {
+                          // 使用 import.meta.env.BASE_URL 确保在 GitHub Pages 上路径正确
+                          const baseUrl = import.meta.env.BASE_URL;
+                          const audioPath = `${baseUrl}audio/${track.filename}`;
+                          initAudioContext();
+                          
+                          if (audioElRef.current) {
+                            audioElRef.current.src = audioPath;
+                            audioElRef.current.load();
+                            
+                            // 停止当前播放
+                            if (audioState.isPlaying) {
+                              audioElRef.current.pause();
+                              setAudioState(prev => ({ ...prev, isPlaying: false }));
+                            }
+                            
+                            // 尝试播放，如果失败则提示文件不存在
+                            try {
+                              await audioElRef.current.play();
+                              if (!sourceNodeRef.current) {
+                                setupAudioGraph();
+                              }
+                              setAudioState(prev => ({ ...prev, isPlaying: true }));
+                              await updateMetadata(track.title, track.artist);
+                            } catch (error) {
+                              console.error("Play failed", error);
+                              alert(`无法播放 ${track.title}\n\n请确保音频文件已放置在 public/audio/${track.filename}`);
+                            }
+                          }
+                        }}
+                      >
+                        <span className="flex items-center">
+                          <span className="text-green-500 mr-2 group-hover:text-green-400">▶</span>
+                          {track.artist} - {track.title}
+                        </span>
+                        <span className="text-[8px] text-gray-600 group-hover:text-gray-500">CLICK</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
