@@ -123,7 +123,7 @@ export const Controls: React.FC<ControlsProps> = ({ audioState, setAudioState, o
         
         {/* 1. Bit Depth */}
         <div className="space-y-2 p-2 border border-gray-700 bg-black/20 rounded hover:border-pink-900 transition-colors">
-          <label className="text-[10px] font-retro text-pink-500 block text-center">BITS ({Math.round(audioState.bitDepth)})</label>
+          <label className="text-[11px] font-retro text-pink-500 block text-center">BITS ({Math.round(audioState.bitDepth)})</label>
           <input 
             type="range" 
             min="1" 
